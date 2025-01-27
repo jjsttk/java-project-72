@@ -5,7 +5,7 @@
 ### CodeClimate Test Coverage Badge:
 [![Test Coverage](https://api.codeclimate.com/v1/badges/ff98dbb9e41ece3dde64/test_coverage)](https://codeclimate.com/github/jjsttk/java-project-72/test_coverage)
 ### GitHub Actions mainCheck.yml badge:
-Asd
+[![Java CI](https://github.com/jjsttk/java-project-72/actions/workflows/mainCheck.yml/badge.svg)](https://github.com/jjsttk/java-project-72/actions/workflows/mainCheck.yml)
 
 # Page Analyzer  
 

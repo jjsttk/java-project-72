@@ -1,3 +1,6 @@
+### Jte trash
+jte-classes/
+
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
