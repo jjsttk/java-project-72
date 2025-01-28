@@ -7,7 +7,7 @@
 ### GitHub Actions mainCheck.yml badge:
 [![Java CI](https://github.com/jjsttk/java-project-72/actions/workflows/mainCheck.yml/badge.svg)](https://github.com/jjsttk/java-project-72/actions/workflows/mainCheck.yml)
 
-# Page Analyzer  
+# [Page Analyzer](https://java-project-72-production-4244.up.railway.app)  
 
 **Page Analyzer** — это веб-приложение для анализа страниц на SEO-пригодность.  
 
