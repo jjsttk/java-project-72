@@ -37,6 +37,9 @@ dependencies {
     // h2 db
     implementation("com.h2database:h2:2.2.224")
 
+    // Postgres driver
+    implementation("org.postgresql:postgresql:42.7.5")
+
     // hikari
     implementation("com.zaxxer:HikariCP:5.1.0")
 
