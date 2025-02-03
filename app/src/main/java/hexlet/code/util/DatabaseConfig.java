@@ -12,16 +12,16 @@ import static hexlet.code.util.FileReader.readResourceFile;
 
 @Slf4j
 public class DatabaseConfig {
-    private static final String ENV_DATABASE_URL = System.getenv("JDBC_DATABASE_URL");
+    private static final String JDBC_DATABASE_URL = System.getenv("JDBC_DATABASE_URL");
 
     public static void configure() throws SQLException, IOException {
         var config = new HikariConfig();
         String sql;
 
         // DB switch logic
-        if (ENV_DATABASE_URL != null) {
+        if (JDBC_DATABASE_URL != null) {
             // PostgreSQL in prod
-            config.setJdbcUrl(ENV_DATABASE_URL);
+            config.setJdbcUrl(JDBC_DATABASE_URL);
             sql = readResourceFile("PostgresSchema.sql");
         } else {
             // H2 locally
