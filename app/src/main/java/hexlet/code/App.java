@@ -1,43 +1,23 @@
 package hexlet.code;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 import hexlet.code.controller.RootController;
-import hexlet.code.repository.BaseRepository;
+import hexlet.code.util.DatabaseConfig;
 import hexlet.code.util.NamedRoutes;
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinJte;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
-import java.util.stream.Collectors;
 
 @Slf4j
 public class App {
-    public static Javalin getApp() throws IOException, SQLException {
-        // config start
-        var hikariConfig = new HikariConfig();
-        hikariConfig.setJdbcUrl("jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;");
-
-        var dataSource = new HikariDataSource(hikariConfig);
-        var sql = readResourceFile("schema.sql");
-
-        log.info(sql);
-        try (var connection = dataSource.getConnection();
-             var statement = connection.createStatement()) {
-            statement.execute(sql);
-        }
-        BaseRepository.setDataSource(dataSource);
+    public static Javalin getApp() throws SQLException, IOException {
+        DatabaseConfig.configure();
 
         var app = Javalin.create(config -> {
             config.bundledPlugins.enableDevLogging();
             config.fileRenderer(new JavalinJte());
-            //config.staticFiles.add("src/main/resources/media/", Location.EXTERNAL);
         });
 
         // ctx
@@ -46,18 +26,6 @@ public class App {
 
 
         return app;
-    }
-
-    private static String readResourceFile(String fileName) throws IOException {
-        var inputStream = App.class.getClassLoader().getResourceAsStream(fileName);
-        if (inputStream != null) {
-            try (BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
-                return reader.lines().collect(Collectors.joining("\n"));
-            }
-        } else {
-            throw new FileNotFoundException(fileName);
-        }
     }
 
     private static int getPort() {
