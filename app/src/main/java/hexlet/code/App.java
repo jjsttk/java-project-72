@@ -4,6 +4,7 @@ import gg.jte.ContentType;
 import gg.jte.TemplateEngine;
 import gg.jte.resolve.ResourceCodeResolver;
 import hexlet.code.controller.RootController;
+import hexlet.code.controller.UrlsController;
 import hexlet.code.util.DatabaseConfig;
 import hexlet.code.util.NamedRoutes;
 import io.javalin.Javalin;
@@ -25,7 +26,9 @@ public class App {
 
         // ctx
         app.get(NamedRoutes.rootPath(), RootController::index);
-
+        app.get(NamedRoutes.urlsPath(), UrlsController::index);
+        app.get(NamedRoutes.urlPath(), UrlsController::showUrlPage);
+        app.post(NamedRoutes.urlsPath(), UrlsController::post);
 
 
         return app;
