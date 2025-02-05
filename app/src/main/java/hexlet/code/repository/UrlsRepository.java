@@ -12,7 +12,7 @@ public class UrlsRepository extends BaseRepository {
 
     public static void save(Url url) throws SQLException {
         String sql = "INSERT INTO urls (name, created_at) VALUES (?, ?)";
-        try (var conn = dataSource.getConnection();
+        try (var conn = getDataSource().getConnection();
              var stmt = conn.prepareStatement(sql, java.sql.Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, url.getUrl());
             stmt.setTimestamp(2, new Timestamp(System.currentTimeMillis()));
@@ -28,7 +28,7 @@ public class UrlsRepository extends BaseRepository {
 
     public static Optional<Url> findByUrl(String urlString) throws SQLException {
         String sql = "SELECT * FROM urls WHERE name = ?";
-        try (var conn = dataSource.getConnection();
+        try (var conn = getDataSource().getConnection();
              var stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, urlString);
             try (var rs = stmt.executeQuery()) {
@@ -40,13 +40,14 @@ public class UrlsRepository extends BaseRepository {
                     url.setId(id);
                     return Optional.of(url);
                 }
-            } return Optional.empty();
+            }
+            return Optional.empty();
         }
     }
 
     public static Optional<Url> find(Long id) throws SQLException {
         String sql = "SELECT * FROM urls WHERE id = ?";
-        try (var conn = dataSource.getConnection();
+        try (var conn = getDataSource().getConnection();
              var stmt = conn.prepareStatement(sql)) {
             stmt.setLong(1, id);
             try (var rs = stmt.executeQuery()) {
@@ -57,7 +58,8 @@ public class UrlsRepository extends BaseRepository {
                     url.setId(id);
                     return Optional.of(url);
                 }
-            } return Optional.empty();
+            }
+            return Optional.empty();
         }
     }
 
@@ -67,7 +69,7 @@ public class UrlsRepository extends BaseRepository {
 
     public static List<Url> getEntities() throws SQLException {
         var sql = "SELECT * FROM urls";
-        try (var conn = dataSource.getConnection();
+        try (var conn = getDataSource().getConnection();
              var stmt = conn.prepareStatement(sql)) {
             var resultSet = stmt.executeQuery();
             var result = new ArrayList<Url>();

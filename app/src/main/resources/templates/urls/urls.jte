@@ -21,6 +21,8 @@ content = @`
                     <tr>
                         <td>${element.getId()}</td>
                         <td><a href="${NamedRoutes.urlPath(String.valueOf(element.getId()))}">${element.getUrl()}</a></td>
+                        <td></td>
+                        <td></td>
                     </tr>
                 @endfor
             </tbody>

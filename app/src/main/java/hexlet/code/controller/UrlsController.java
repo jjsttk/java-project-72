@@ -12,7 +12,6 @@ import io.javalin.http.NotFoundResponse;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 
 import static io.javalin.rendering.template.TemplateUtil.model;
 
@@ -38,7 +37,7 @@ public class UrlsController {
             if (UrlValidator.isValid(tempName)) {
                 var name = UrlValidator.extractBaseUrl(tempName);
                 if (UrlsRepository.findByUrl(name).isEmpty()) {
-                    var url = new Url(name, new Timestamp(System.currentTimeMillis()));
+                    var url = new Url(name);
                     UrlsRepository.save(url);
                     ctx.sessionAttribute("flash", "Страница успешно добавлена");
                     ctx.sessionAttribute("flashType", "success");
