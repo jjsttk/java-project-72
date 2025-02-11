@@ -16,3 +16,6 @@ CREATE TABLE url_checks(
     description TEXT,
     created_at TIMESTAMP NOT NULL
 );
+
+CREATE INDEX idx_urls_check_lastCheck
+    ON url_checks (url_id, created_at DESC, status_code);
