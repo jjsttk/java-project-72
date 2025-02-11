@@ -2,6 +2,7 @@ package hexlet.code;
 
 import hexlet.code.model.Url;
 import hexlet.code.repository.UrlsRepository;
+import hexlet.code.util.view.NamedRoutes;
 import io.javalin.Javalin;
 import io.javalin.testtools.JavalinTest;
 
@@ -12,6 +13,7 @@ import java.sql.SQLException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public final class AppTest {
     private static Javalin app;
@@ -24,7 +26,7 @@ public final class AppTest {
     @Test
     void testMainPage() {
         JavalinTest.test(app, (server, client) -> {
-            var response = client.get("/");
+            var response = client.get(NamedRoutes.rootPath());
             assertThat(response.code()).isEqualTo(200);
         });
     }
@@ -32,7 +34,7 @@ public final class AppTest {
     @Test
     public void testUrlsPage() {
         JavalinTest.test(app, (server, client) -> {
-            var response = client.get("/urls");
+            var response = client.get(NamedRoutes.urlsPath());
             assertThat(response.code()).isEqualTo(200);
         });
     }
@@ -41,11 +43,13 @@ public final class AppTest {
     public void testAddNewSite() {
         JavalinTest.test(app, (server, client) -> {
             var requestBody = "url=https://google.com:8080";
-            var postResponse = client.post("/urls", requestBody);
-            assertThat(postResponse.code()).isEqualTo(200);
+            try (var postResponse = client.post(NamedRoutes.urlsPath(), requestBody)) {
+                assertThat(postResponse.code()).isEqualTo(200);
+            }
 
-            var getResponse = client.get("/urls");
+            var getResponse = client.get(NamedRoutes.urlsPath());
             assertThat(getResponse.code()).isEqualTo(200);
+            assertNotNull(getResponse.body());
             String responseBody = getResponse.body().string();
             assertThat(responseBody).contains("https://google.com:8080");
         });
@@ -55,11 +59,13 @@ public final class AppTest {
     public void testWrongSyntaxInAddNewSite() {
         JavalinTest.test(app, (server, client) -> {
             var requestBody = "url=wws://google.com";
-            var postResponse = client.post("/urls", requestBody);
-            assertThat(postResponse.code()).isEqualTo(200);
+            try (var postResponse = client.post(NamedRoutes.urlsPath(), requestBody)) {
+                assertThat(postResponse.code()).isEqualTo(200);
+            }
 
-            var getResponse = client.get("/urls");
+            var getResponse = client.get(NamedRoutes.urlsPath());
             assertThat(getResponse.code()).isEqualTo(200);
+            assertNotNull(getResponse.body());
             String responseBody = getResponse.body().string();
             assertFalse(responseBody.contains("wws://google.com"));
         });
@@ -70,26 +76,27 @@ public final class AppTest {
         JavalinTest.test(app, (server, client) -> {
             var requestBody = "url=https://google.com:8080";
 
-            // Add the first URL
-            var postResponse1 = client.post("/urls", requestBody);
-            assertThat(postResponse1.code()).isEqualTo(200);
+            try (var postResponse1 = client.post(NamedRoutes.urlsPath(), requestBody)) {
+                assertThat(postResponse1.code()).isEqualTo(200);
+            }
 
-            // Verify the URL was added
-            var getResponse1 = client.get("/urls");
+            var getResponse1 = client.get(NamedRoutes.urlsPath());
             assertThat(getResponse1.code()).isEqualTo(200);
+            assertNotNull(getResponse1.body());
             String responseBody1 = getResponse1.body().string();
             assertThat(responseBody1).contains("https://google.com:8080");
 
-            // Try to add the same URL again
-            var postResponse2 = client.post("/urls", requestBody);
-            assertThat(postResponse2.code()).isEqualTo(200);
+            try (var postResponse2 = client.post(NamedRoutes.urlsPath(), requestBody)) {
+                assertThat(postResponse2.code()).isEqualTo(200);
+            }
 
-            // Verify the URL is not added
-            var getResponse2 = client.get("/urls");
+
+            var getResponse2 = client.get(NamedRoutes.urlsPath());
             assertThat(getResponse2.code()).isEqualTo(200);
+            assertNotNull(getResponse2.body());
             String responseBody2 = getResponse2.body().string();
 
-            // Ensure that the URL only appears once
+
             int count = responseBody2.split("https://google.com:8080").length - 1;
             assertThat(count).isEqualTo(1);
         });
@@ -97,24 +104,25 @@ public final class AppTest {
 
     @Test
     public void testUrlPage() throws SQLException {
-        var url = new Url("https://google.com");
+        var url = Url.createUrlWithTimestampNow("https://google.com");
         UrlsRepository.save(url);
+        var id = url.getId();
         JavalinTest.test(app, (server, client) -> {
-            var response = client.get("/urls/" + url.getId());
+            var response = client.get(NamedRoutes.urlPath(id));
             assertThat(response.code()).isEqualTo(200);
         });
     }
 
     @Test
-    void testUrlNotFound() throws Exception {
+    void testUrlNotFound() {
         JavalinTest.test(app, (server, client) -> {
-            var response = client.get("/urls/999999");
+            var response = client.get(NamedRoutes.urlPath("9999"));
             assertThat(response.code()).isEqualTo(404);
         });
     }
 
     @Test
-    void testRandomPageNotFound() throws Exception {
+    void testRandomPageNotFound() {
         JavalinTest.test(app, (server, client) -> {
             var response = client.get("/hello/yandex");
             assertThat(response.code()).isEqualTo(404);

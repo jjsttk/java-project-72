@@ -18,33 +18,23 @@ repositories {
 }
 
 dependencies {
-    // tests
-    testImplementation(platform("org.junit:junit-bom:5.10.3"))
-    testImplementation("org.junit.jupiter:junit-jupiter:5.10.3")
+    testImplementation(platform("org.junit:junit-bom:5.11.2"))
+    testImplementation("org.junit.jupiter:junit-jupiter:5.11.1")
     testImplementation("org.assertj:assertj-core:3.26.3")
+    testImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
 
-    // Javalin
+    implementation("com.mashape.unirest:unirest-java:1.4.9")
+
     implementation("io.javalin:javalin:6.4.0")
     implementation ("io.javalin:javalin-rendering:6.4.0")
-    // Javalin tests
     implementation ("io.javalin:javalin-bundle:6.4.0")
-    // template
     implementation("gg.jte:jte:3.1.16")
 
-    // logger
-    implementation("org.slf4j:slf4j-simple:2.0.13")
+    implementation("org.slf4j:slf4j-simple:2.0.16")
 
-    // h2 db
-    implementation("com.h2database:h2:2.2.224")
-
-    // Postgres driver
+    implementation("com.h2database:h2:2.3.232")
     implementation("org.postgresql:postgresql:42.7.5")
-
-    // hikari
     implementation("com.zaxxer:HikariCP:5.1.0")
-
-    // jackson core
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.17.0")
 }
 
 tasks.jacocoTestReport {

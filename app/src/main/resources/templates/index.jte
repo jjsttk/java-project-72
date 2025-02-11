@@ -1,4 +1,4 @@
-@import hexlet.code.dto.IndexPage
+@import hexlet.code.dto.index.IndexPage
 @param IndexPage page
 @template.layout.page(
 page = page,

@@ -1,4 +1,4 @@
-package hexlet.code.util;
+package hexlet.code.util.file;
 
 import hexlet.code.App;
 

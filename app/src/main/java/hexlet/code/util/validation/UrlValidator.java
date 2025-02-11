@@ -1,4 +1,4 @@
-package hexlet.code.util;
+package hexlet.code.util.validation;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -10,15 +10,21 @@ public class UrlValidator {
             return false;
         }
         var temp = new URI(url).toURL();
-        return true; // Haven't exceptions - true
+        return true;
     }
     public static String extractBaseUrl(String url) throws URISyntaxException, MalformedURLException {
-        var javaUrl = new URI(url).toURL(); // URI → URL
-        // collect str
+        var javaUrl = new URI(url).toURL();
+
         String protocol = javaUrl.getProtocol();
         String host = javaUrl.getHost();
         int port = javaUrl.getPort();
-        return (port == -1) ? String.format("%s://%s", protocol, host)
-                : String.format("%s://%s:%d", protocol, host, port);
+
+        return portIsPresent(port)
+                ? String.format("%s://%s:%d", protocol, host, port)
+                : String.format("%s://%s", protocol, host);
+    }
+
+    private static boolean portIsPresent(int port) {
+        return port != -1;
     }
 }

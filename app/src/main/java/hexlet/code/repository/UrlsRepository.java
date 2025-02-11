@@ -3,7 +3,6 @@ package hexlet.code.repository;
 import hexlet.code.model.Url;
 
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -14,8 +13,8 @@ public class UrlsRepository extends BaseRepository {
         String sql = "INSERT INTO urls (name, created_at) VALUES (?, ?)";
         try (var conn = getDataSource().getConnection();
              var stmt = conn.prepareStatement(sql, java.sql.Statement.RETURN_GENERATED_KEYS)) {
-            stmt.setString(1, url.getUrl());
-            stmt.setTimestamp(2, new Timestamp(System.currentTimeMillis()));
+            stmt.setString(1, url.getName());
+            stmt.setTimestamp(2, url.getCreatedAt());
             stmt.executeUpdate();
             var generatedKey = stmt.getGeneratedKeys();
             if (generatedKey.next()) {
@@ -36,8 +35,7 @@ public class UrlsRepository extends BaseRepository {
                     var id = rs.getLong("id");
                     var name = rs.getString("name");
                     var createdAt = rs.getTimestamp("created_at");
-                    var url = new Url(name, createdAt);
-                    url.setId(id);
+                    var url = new Url(id, name, createdAt);
                     return Optional.of(url);
                 }
             }
@@ -54,8 +52,7 @@ public class UrlsRepository extends BaseRepository {
                 if (rs.next()) {
                     var name = rs.getString("name");
                     var createdAt = rs.getTimestamp("created_at");
-                    var url = new Url(name, createdAt);
-                    url.setId(id);
+                    var url = new Url(id, name, createdAt);
                     return Optional.of(url);
                 }
             }
@@ -77,8 +74,7 @@ public class UrlsRepository extends BaseRepository {
                 var id = resultSet.getLong("id");
                 var name = resultSet.getString("name");
                 var createdAt = resultSet.getTimestamp("created_at");
-                var url = new Url(name, createdAt);
-                url.setId(id);
+                var url = new Url(id, name, createdAt);
                 result.add(url);
             }
             return result;

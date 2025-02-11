@@ -1,5 +1,6 @@
 @import hexlet.code.dto.urls.UrlsPage
-@import hexlet.code.util.NamedRoutes
+@import hexlet.code.util.view.DateTimeUtils
+@import hexlet.code.util.view.NamedRoutes
 @param UrlsPage page
 @template.layout.page(
 page = page,
@@ -15,14 +16,19 @@ content = @`
                 <th class="col-1">Код ответа</th>
             </tr>
             </thead>
-            @if(!page.getUrls().isEmpty())
+            @if(!page.getUrlsMap().isEmpty())
             <tbody>
-                @for(var element : page.getUrls())
+                @for(var entry : page.getUrlsMap().entrySet())
                     <tr>
-                        <td>${element.getId()}</td>
-                        <td><a href="${NamedRoutes.urlPath(String.valueOf(element.getId()))}">${element.getUrl()}</a></td>
-                        <td></td>
-                        <td></td>
+                        <td>${entry.getKey().getId()}</td>
+                        <td><a href="${NamedRoutes.urlPath(String.valueOf(entry.getKey().getId()))}">${entry.getKey().getName()}</a></td>
+                        @if(entry.getValue() != null)
+                            <td>${DateTimeUtils.formatTimestamp(entry.getValue().getCreatedAt())}</td>
+                            <td>${entry.getValue().getStatusCode()}</td>
+                        @else
+                            <td></td>
+                            <td></td>
+                        @endif
                     </tr>
                 @endfor
             </tbody>

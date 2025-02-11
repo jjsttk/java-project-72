@@ -1,4 +1,4 @@
-package hexlet.code.util;
+package hexlet.code.util.view;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;

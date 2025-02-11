@@ -5,8 +5,8 @@ import gg.jte.TemplateEngine;
 import gg.jte.resolve.ResourceCodeResolver;
 import hexlet.code.controller.RootController;
 import hexlet.code.controller.UrlsController;
-import hexlet.code.util.DatabaseConfig;
-import hexlet.code.util.NamedRoutes;
+import hexlet.code.config.db.DatabaseConfig;
+import hexlet.code.util.view.NamedRoutes;
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinJte;
 import lombok.extern.slf4j.Slf4j;
@@ -25,11 +25,11 @@ public class App {
         });
 
         // ctx
-        app.get(NamedRoutes.rootPath(), RootController::index);
-        app.get(NamedRoutes.urlsPath(), UrlsController::index);
-        app.get(NamedRoutes.urlPath(), UrlsController::showUrlPage);
+        app.get(NamedRoutes.rootPath(), RootController::showIndexPage);
+        app.get(NamedRoutes.urlsPath(), UrlsController::showUrlsPage);
+        app.get(NamedRoutes.urlPath("{id}"), UrlsController::showUrlPage);
         app.post(NamedRoutes.urlsPath(), UrlsController::post);
-
+        app.post(NamedRoutes.urlChecksPath("{id}"), UrlsController::checkUrl);
 
         return app;
     }

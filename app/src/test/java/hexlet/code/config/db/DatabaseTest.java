@@ -1,6 +1,5 @@
-package hexlet.code;
+package hexlet.code.config.db;
 
-import hexlet.code.util.DatabaseConfig;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
