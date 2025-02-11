@@ -56,6 +56,21 @@ public final class AppTest {
     }
 
     @Test
+    public void testNotAbsolutePathUrl() {
+        JavalinTest.test(app, (server, client) -> {
+            var requestBody = "url=asd";
+            try (var postResponse = client.post(NamedRoutes.urlsPath(), requestBody)) {
+                assertThat(postResponse.code()).isEqualTo(200);
+            }
+
+            var getResponse = client.get(NamedRoutes.urlsPath());
+            assertThat(getResponse.code()).isEqualTo(200);
+            assertNotNull(getResponse.body());
+            String responseBody = getResponse.body().string();
+            assertFalse(responseBody.contains("asd"));
+        });
+    }
+    @Test
     public void testWrongSyntaxInAddNewSite() {
         JavalinTest.test(app, (server, client) -> {
             var requestBody = "url=wws://google.com";

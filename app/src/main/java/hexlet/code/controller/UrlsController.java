@@ -49,7 +49,7 @@ public class UrlsController {
                 ControllerUtils.errorHandler(ctx, "Некорректный URL");
                 ctx.redirect(NamedRoutes.rootPath());
             }
-        } catch (URISyntaxException | MalformedURLException e) {
+        } catch (URISyntaxException | IllegalArgumentException | MalformedURLException e) {
             log.error("Ошибка валидации URL: {}", tempName, e);
             ControllerUtils.errorHandler(ctx, "Некорректный URL");
             ctx.redirect(NamedRoutes.rootPath());
