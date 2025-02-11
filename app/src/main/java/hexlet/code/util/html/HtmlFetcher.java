@@ -19,8 +19,8 @@ public final class HtmlFetcher {
             return null;
         }
 
-        Map<String, String> parsedData = parseResponse(response);
-        return createUrlCheck(response.getStatus(), parsedData);
+        Map<String, String> parseResult = parseResponse(response);
+        return createUrlCheck(response.getStatus(), parseResult);
     }
 
     private static HttpResponse<String> fetchResponse(Url url) {

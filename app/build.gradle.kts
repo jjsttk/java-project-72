@@ -25,6 +25,8 @@ dependencies {
 
     implementation("com.mashape.unirest:unirest-java:1.4.9")
 
+    implementation ("org.jsoup:jsoup:1.18.3")
+
     implementation("io.javalin:javalin:6.4.0")
     implementation ("io.javalin:javalin-rendering:6.4.0")
     implementation ("io.javalin:javalin-bundle:6.4.0")
