@@ -37,7 +37,7 @@ public class HtmlFetcherTest {
                 .setBody(mockHtmlBody));
 
         String mockUrl = mockServer.url("/").toString();
-        Url url = Url.createUrlWithTimestampNow(mockUrl);
+        Url url = Url.createUrl(mockUrl);
         UrlCheck result = HtmlFetcher.getUrlCheckResult(url);
 
         assertNotNull(result);
@@ -52,7 +52,7 @@ public class HtmlFetcherTest {
         mockServer.enqueue(new MockResponse().setResponseCode(404));
 
         String mockUrl = mockServer.url("/notfound").toString();
-        Url url = Url.createUrlWithTimestampNow(mockUrl);
+        Url url = Url.createUrl(mockUrl);
         UrlCheck result = HtmlFetcher.getUrlCheckResult(url);
         assertNotNull(result);
         assertThat(result.getStatusCode()).isEqualTo(404);
@@ -60,4 +60,14 @@ public class HtmlFetcherTest {
         assertThat(result.getH1()).isNull();
         assertThat(result.getDescription()).isNull();
     }
+
+    @Test
+    void testFetchInvalidUrl() {
+        Url invalidUrl = Url.createUrl("https://фывasd.ru");
+
+        var response = HtmlFetcher.fetchResponse(invalidUrl);
+
+        assertThat(response).isNull();
+    }
+
 }

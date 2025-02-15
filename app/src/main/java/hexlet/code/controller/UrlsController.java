@@ -72,7 +72,6 @@ public class UrlsController {
         var id = ctx.pathParamAsClass("id", Long.class).get();
         var url = getUrlById(id);
 
-
         var check = HtmlFetcher.getUrlCheckResult(url);
 
         if (check == null) {
@@ -116,7 +115,7 @@ public class UrlsController {
         String name = extractBaseUrl(tempName);
         try {
             if (UrlsRepository.findByUrl(name).isEmpty()) {
-                var url = Url.createUrlWithTimestampNow(name);
+                var url = Url.createUrl(name);
                 UrlsRepository.save(url);
                 ControllerUtils.setFlashMessage(ctx, "Страница успешно добавлена", "success");
                 ctx.redirect(NamedRoutes.urlsPath());

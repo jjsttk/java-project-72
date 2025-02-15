@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.ToString;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 @Data
 @ToString
@@ -15,12 +14,11 @@ public final class Url {
     private String name;
     private Timestamp createdAt;
 
-    public static Url createUrlWithTimestampNow(String url) {
+    public static Url createUrl(String url) {
         return new Url(url);
     }
 
     private Url(String url) {
         this.name = url;
-        this.createdAt = Timestamp.valueOf(LocalDateTime.now());
     }
 }

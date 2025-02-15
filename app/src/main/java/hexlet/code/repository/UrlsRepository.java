@@ -3,6 +3,8 @@ package hexlet.code.repository;
 import hexlet.code.model.Url;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -14,11 +16,13 @@ public class UrlsRepository extends BaseRepository {
         try (var conn = getDataSource().getConnection();
              var stmt = conn.prepareStatement(sql, java.sql.Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, url.getName());
-            stmt.setTimestamp(2, url.getCreatedAt());
+            var timestamp = Timestamp.valueOf(LocalDateTime.now());
+            stmt.setTimestamp(2, timestamp);
             stmt.executeUpdate();
             var generatedKey = stmt.getGeneratedKeys();
             if (generatedKey.next()) {
                 url.setId(generatedKey.getLong(1));
+                url.setCreatedAt(timestamp);
             } else {
                 throw new SQLException("DB have not returned an id after saving an entity");
             }

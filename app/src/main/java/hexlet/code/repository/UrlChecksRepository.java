@@ -4,6 +4,8 @@ import hexlet.code.model.UrlCheck;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,12 +23,14 @@ public class UrlChecksRepository extends BaseRepository {
             stmt.setString(3, checkResult.getTitle());
             stmt.setString(4, checkResult.getH1());
             stmt.setString(5, checkResult.getDescription());
-            stmt.setTimestamp(6, checkResult.getCreatedAt());
+            var timestamp = Timestamp.valueOf(LocalDateTime.now());
+            stmt.setTimestamp(6, timestamp);
             stmt.executeUpdate();
 
             var generatedKey = stmt.getGeneratedKeys();
             if (generatedKey.next()) {
                 checkResult.setId(generatedKey.getLong(1));
+                checkResult.setCreatedAt(timestamp);
             } else {
                 throw new SQLException("DB have not returned an id after saving an entity");
             }

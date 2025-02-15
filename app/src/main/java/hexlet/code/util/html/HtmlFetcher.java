@@ -8,6 +8,9 @@ import hexlet.code.model.UrlCheck;
 import hexlet.code.util.parser.ResponseParser;
 import lombok.extern.slf4j.Slf4j;
 
+import java.net.IDN;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
 
 @Slf4j
@@ -23,13 +26,28 @@ public final class HtmlFetcher {
         return createUrlCheck(response.getStatus(), parseResult);
     }
 
-    private static HttpResponse<String> fetchResponse(Url url) {
+    public static HttpResponse<String> fetchResponse(Url url) {
         try {
-            return Unirest.get(url.getName()).asString();
+            String normalizedUrl = normalizeUrl(url);
+            return Unirest.get(normalizedUrl).asString();
         } catch (UnirestException e) {
-            log.error(e.getMessage(), e);
-            return null;
+            log.error("Ошибка HTTP-запроса: {}", e.getMessage(), e);
+        } catch (URISyntaxException e) {
+            log.error("Некорректный URL: {}", url, e);
         }
+        return null;
+    }
+
+    private static String normalizeUrl(Url url) throws URISyntaxException {
+        URI uri = new URI(url.getName());
+        if (!uri.isAbsolute()) {
+            throw new URISyntaxException(url.getName(), "Относительный URL недопустим");
+        }
+        String host = uri.getHost();
+        String convertedToAsciiHost = host == null ? null : IDN.toASCII(host);
+        return new URI(uri.getScheme(), null, convertedToAsciiHost,
+                uri.getPort(), null, null, null)
+                .toString();
     }
 
     private static Map<String, String> parseResponse(HttpResponse<String> response) {

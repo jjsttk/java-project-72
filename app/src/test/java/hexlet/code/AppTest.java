@@ -12,8 +12,10 @@ import org.junit.jupiter.api.Test;
 import java.sql.SQLException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public final class AppTest {
     private static Javalin app;
@@ -51,7 +53,9 @@ public final class AppTest {
             assertThat(getResponse.code()).isEqualTo(200);
             assertNotNull(getResponse.body());
             String responseBody = getResponse.body().string();
-            assertThat(responseBody).contains("https://google.com:8080");
+            var expectedName = "https://google.com:8080";
+            assertThat(responseBody).contains(expectedName);
+            assertTrue(isDBContainsUrl(expectedName));
         });
     }
 
@@ -68,6 +72,7 @@ public final class AppTest {
             assertNotNull(getResponse.body());
             String responseBody = getResponse.body().string();
             assertFalse(responseBody.contains("asd"));
+            assertFalse(isDBContainsUrl("asd"));
         });
     }
     @Test
@@ -82,15 +87,17 @@ public final class AppTest {
             assertThat(getResponse.code()).isEqualTo(200);
             assertNotNull(getResponse.body());
             String responseBody = getResponse.body().string();
-            assertFalse(responseBody.contains("wws://google.com"));
+            var expected = "wws://google.com";
+            assertFalse(responseBody.contains(expected));
+            assertFalse(isDBContainsUrl(expected));
         });
     }
 
     @Test
     public void testAddDuplicateSite() {
         JavalinTest.test(app, (server, client) -> {
-            var requestBody = "url=https://google.com:8080";
-
+            var requestUrlName = "https://google.com:8080";
+            var requestBody = "url=" + requestUrlName;
             try (var postResponse1 = client.post(NamedRoutes.urlsPath(), requestBody)) {
                 assertThat(postResponse1.code()).isEqualTo(200);
             }
@@ -99,7 +106,8 @@ public final class AppTest {
             assertThat(getResponse1.code()).isEqualTo(200);
             assertNotNull(getResponse1.body());
             String responseBody1 = getResponse1.body().string();
-            assertThat(responseBody1).contains("https://google.com:8080");
+            assertThat(responseBody1).contains(requestUrlName);
+            assertTrue(isDBContainsUrl(requestUrlName));
 
             try (var postResponse2 = client.post(NamedRoutes.urlsPath(), requestBody)) {
                 assertThat(postResponse2.code()).isEqualTo(200);
@@ -112,16 +120,20 @@ public final class AppTest {
             String responseBody2 = getResponse2.body().string();
 
 
-            int count = responseBody2.split("https://google.com:8080").length - 1;
+            int count = responseBody2.split(requestUrlName).length - 1;
             assertThat(count).isEqualTo(1);
+            assertTrue(isDBContainsUrl(requestUrlName));
+            assertTrue(isUrlUniqueInDB(requestUrlName));
         });
     }
 
     @Test
     public void testUrlPage() throws SQLException {
-        var url = Url.createUrlWithTimestampNow("https://google.com");
+        var url = Url.createUrl("https://google.com");
         UrlsRepository.save(url);
         var id = url.getId();
+        assertEquals(url, UrlsRepository.find(id).get());
+
         JavalinTest.test(app, (server, client) -> {
             var response = client.get(NamedRoutes.urlPath(id));
             assertThat(response.code()).isEqualTo(200);
@@ -142,5 +154,29 @@ public final class AppTest {
             var response = client.get("/hello/yandex");
             assertThat(response.code()).isEqualTo(404);
         });
+    }
+
+    private Boolean isDBContainsUrl(String url) {
+        String urlName;
+        Url urlFromDB;
+        try {
+            urlFromDB = UrlsRepository.findByUrl(url).orElse(null);
+            urlName = urlFromDB != null ? urlFromDB.getName() : null;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return urlName != null && urlName.equals(url);
+    }
+
+    private Boolean isUrlUniqueInDB(String url) {
+        try {
+            var entities = UrlsRepository.getEntities();
+            var result = entities.stream()
+                    .filter(obj -> obj.getName().equals(url))
+                    .count();
+            return result == 1;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

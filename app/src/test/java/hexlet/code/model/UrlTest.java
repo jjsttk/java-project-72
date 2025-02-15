@@ -6,27 +6,27 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class UrlTest {
 
     @Test
-    void testCreateUrlWithTimestampNow() {
+    void testCreateUrl() {
         String urlName = "https://example.com";
-        Url url = Url.createUrlWithTimestampNow(urlName);
+        Url url = Url.createUrl(urlName);
 
         assertEquals(urlName, url.getName());
-        assertNotNull(url.getCreatedAt());
+        assertNull(url.getCreatedAt());
     }
 
     @Test
     void testConstructorWithUrl() {
         String urlName = "https://example.com";
-        Url url = Url.createUrlWithTimestampNow(urlName);
+        Url url = Url.createUrl(urlName);
 
         assertEquals(urlName, url.getName());
-        assertNotNull(url.getCreatedAt());
+        assertNull(url.getCreatedAt());
     }
 
     @Test

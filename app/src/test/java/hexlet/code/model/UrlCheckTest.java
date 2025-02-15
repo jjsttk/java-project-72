@@ -6,7 +6,6 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -36,7 +35,7 @@ class UrlCheckTest {
         assertEquals(title, check.getTitle());
         assertEquals(h1, check.getH1());
         assertEquals(description, check.getDescription());
-        assertNotNull(check.getCreatedAt());
+        assertNull(check.getCreatedAt());
     }
 
     @Test

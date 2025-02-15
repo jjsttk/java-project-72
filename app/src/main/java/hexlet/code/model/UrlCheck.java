@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -36,7 +35,6 @@ public class UrlCheck {
         this.title = checkTitle;
         this.h1 = checkH1;
         this.description = checkDescription;
-        this.createdAt = Timestamp.valueOf(LocalDateTime.now());
     }
 
 }
