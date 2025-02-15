@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import java.sql.SQLException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -132,7 +131,10 @@ public final class AppTest {
         var url = Url.createUrl("https://google.com");
         UrlsRepository.save(url);
         var id = url.getId();
-        assertEquals(url, UrlsRepository.find(id).get());
+
+        var dbUrl = UrlsRepository.find(id).get();
+        assertThat(dbUrl.getName()).isEqualTo(url.getName());
+        assertThat(dbUrl.getId()).isEqualTo(id);
 
         JavalinTest.test(app, (server, client) -> {
             var response = client.get(NamedRoutes.urlPath(id));

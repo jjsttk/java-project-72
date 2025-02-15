@@ -32,10 +32,11 @@ public final class HtmlFetcher {
             return Unirest.get(normalizedUrl).asString();
         } catch (UnirestException e) {
             log.error("Ошибка HTTP-запроса: {}", e.getMessage(), e);
+            return null;
         } catch (URISyntaxException e) {
             log.error("Некорректный URL: {}", url, e);
+            return null;
         }
-        return null;
     }
 
     private static String normalizeUrl(Url url) throws URISyntaxException {
